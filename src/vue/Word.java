@@ -15,7 +15,10 @@ public class Word {
 	private int nbrcoup = 0; 
 	
 	public Word(){
-		initWord();}
+		do{
+		initWord();
+		}while(word.length()<3);
+	}
 	
 	public void initWord(){
 		

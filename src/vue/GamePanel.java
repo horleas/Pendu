@@ -19,6 +19,7 @@ public class GamePanel extends JPanel {
 	private JLabel scoreactuel = new JLabel("Votre score actuel est de A point \n");
 	private JLabel motatrouve = new JLabel();
 	private Word word = new Word();
+	boolean modif = false ;
 
 	private JPanel pangame = new JPanel();
 	private JPanel panlettre = new JPanel();
@@ -34,15 +35,27 @@ public class GamePanel extends JPanel {
 	private Dimension dimlettre = new Dimension (400, 100);
 	
 	private  String tabchar[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+	private char accenttabE[] = {'Ê','Ë','É','È','E'};
+	private char accenttabA[] = {'Á','Â','À','Ã','Ä','A'};
+	private char accenttabC[] = {'Ç','C'};
+	private char accenttabO[] = {'Ö','O'};
+	private char accenttabU[] = {'Ú','Û','Ù','Ü','U'};
+	
+	
 	private JButton[] tabButton = new JButton[tabchar.length];
-	private int nbrmot = 0 ; 
-	private int pts = 0 ;
+	private static int nbrmot = 0 ; 
+	private static int pts = 0 ;
 	private int nbrfaute = 0 ;
+	private int nbrcoup = 0 ;
 	
 	
 	public GamePanel(){
 		this.setBackground(Color.white);
 		
+		nbrmot = 0 ; 
+		pts = 0 ;
+		nbrfaute = 0 ;
+		nbrcoup = 0 ;
 		
 		//Left CONTENT
 		
@@ -76,7 +89,7 @@ public class GamePanel extends JPanel {
 		//mot a trouver
 
 		this.motatrouve.setForeground(Color.blue);
-		motatrouve.setText("**************");
+		motatrouve.setText(this.setSecretWordetoile());
 		motatrouve.setHorizontalAlignment(JLabel.CENTER);
 		this.pantexte.add(motatrouve,BorderLayout.CENTER);
 		
@@ -123,16 +136,34 @@ public class GamePanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			((JButton) e.getSource()).setEnabled(false);
 			System.out.println("vous avez appuyer sur le bouton : " + ((JButton) e.getSource()).getText());
+			char lettretape =((JButton) e.getSource()).getText().charAt(0);
+			
+			if (lettretape == 'E'){
+				verifyword(accenttabE);
+			}else if (lettretape == 'A'){
+				verifyword(accenttabA);
+			}else if (lettretape == 'O'){
+				verifyword(accenttabO);
+			}else if (lettretape == 'U'){
+				verifyword(accenttabU);
+			}else if (lettretape == 'C'){
+				verifyword(accenttabC);
+			}else{			
+				verifyword(lettretape);
+			}
+			nbrcoup++;
+			if(modif){
+			}
+			else{
 			nbrfaute++;
-			System.out.println("votre nbr de faute est : " + nbrfaute);
-			System.out.println(word.getWord());
 			rightcontent.removeAll();
 			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
 			rightcontent.revalidate();
+			}
 			
-			/*if(((JButton) e.getSource()).getText() == tabButton[25].getText() ){
-				restartbouton();
-			}*/
+			System.out.println("votre nbr de faute est : " + nbrfaute + ". Vous en etes a votre "+ nbrcoup+" coups");
+			System.out.println(word.getWord());
+			
 			
 			if (nbrfaute > 6){
 				echec();
@@ -145,23 +176,173 @@ public class GamePanel extends JPanel {
 			refreshbouton.setEnabled(true);
 		}
 		  nbrfaute = 0;	
-		  word.initWord();
+		  nbrcoup = 0 ;
+		  
+			do{
+				word.initWord();
+				}while(word.getWord().length()<3);
+			
+			motatrouve.setText(setSecretWordetoile());
+			
+			rightcontent.removeAll();
+			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
+			rightcontent.revalidate();
+		  
 	}
 	
+	
+	
 	public void echec(){
+		
+
 		 JOptionPane jop = new JOptionPane();      
 	        String mess = "Vous avez perdu\n";
-	        mess += "le mot était " + word.getWord() +"\n";     
-	        jop.showMessageDialog(null, mess, "Perdu", JOptionPane.INFORMATION_MESSAGE);   
+	        mess += "le mot était " + word.getWord() +"\n";
+	        mess += "en " + nbrcoup +" coups \n";
+	        mess += "Vous avez accumulé " + pts +" points en "+nbrmot + " mot \n";
+	        jop.showMessageDialog(null, mess, "Perdu", JOptionPane.INFORMATION_MESSAGE);  
+	        
+	        if( pts >= ScorePanel.getworstscore()){
+	        	System.out.println("vous êtes dans le top 10");
+	        	
+	        	JOptionPane joppseudo = new JOptionPane();
+	            String pseudo = joppseudo.showInputDialog(null, "Veuillez écrire votre pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+	            
+	            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
+	            
+	            
+	            
+				Fenetre.conteneur.removeAll();
+				Fenetre.conteneur.add(ScorePanel.getPanel(), BorderLayout.CENTER);
+				Fenetre.conteneur.revalidate();
+	            
+	        }
+	        
+	        
+	        nbrmot=0;
+	        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
+	        
+	        pts = 0;
+	        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " points \n" );
 	        
 	        restartbouton();
 
 	}
 	
-	public String setSecretWord(){
+	public void victory(){
+        //rajouter Score
+        nbrmot++;
+        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
+        
+        pts = pts + getScorebyfault(nbrfaute);
+        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+		
+		 JOptionPane jop = new JOptionPane();      
+	        String mess = "Vous avez gagné\n";
+	        mess += "en " + nbrcoup +" coups avec " + nbrfaute + " fautes\n" ;
+	        mess += "vous gagner " +  getScorebyfault(nbrfaute) +" pts. Votre total de point est de  " +pts ;
+	        jop.showMessageDialog(null, mess, "Gagné", JOptionPane.INFORMATION_MESSAGE);   
+	        
+	        
+	        restartbouton();
+
+	}
+	
+	
+	public String setSecretWordetoile(){
 		String secret = "";
 		
+		for (int k=0 ;k<word.getWord().length() ; k++ ){
+			secret +="*";
+		}
+		
 		return secret; 
+	}
+	
+	
+	public boolean wordcomplete(){
+		boolean wordfound = true ;
+		for (int k=0 ;k<word.getWord().length() ; k++ ){
+			if (motatrouve.getText().charAt(k) == '*'){
+				wordfound = false;
+			}	
+		}
+		return wordfound ;
+	}
+	//penser a ajouter wordcomplete pour condition de victoire non présence de "*"
+	
+	public void verifyword(char c){
+		String wordupdate= motatrouve.getText();
+		String wordall= word.getWord();
+		modif = false ;
+	
+		for(int k=0;k <wordall.length();k++){
+			if (wordall.charAt(k) == c){			
+				wordupdate = wordupdate.substring(0, k)+c+wordupdate.substring(k+1);
+			
+				modif = true;
+			}
+		}
+			
+		if(modif){
+			motatrouve.setText(wordupdate);
+			System.out.println("lettre trouver " + wordupdate);
+			
+			if(wordcomplete()){
+				victory();	
+			}		
+		}
+	}
+	
+	
+	public void verifyword(char[] c){
+		String wordupdate= motatrouve.getText();
+		String wordall= word.getWord();
+		modif = false ;
+		
+		for(int j = 0; j<c.length;j++){
+			for(int k=0;k <wordall.length();k++){
+				if (wordall.charAt(k) == c[j]){			
+					wordupdate = wordupdate.substring(0, k)+c[j]+wordupdate.substring(k+1);
+				
+					modif = true;
+				}
+			}
+		}	
+		if(modif){
+			motatrouve.setText(wordupdate);
+			System.out.println("lettre trouver " + wordupdate);
+			
+			if(wordcomplete()){
+				victory();	
+			}		
+		}
+	}
+	
+	
+	
+	public int getScorebyfault(int nbrfautes){
+		int newpts = 0 ;
+		switch(nbrfautes){
+		case 0 : newpts = 100;
+				break;
+		case 1 : newpts = 75;
+				break;
+		case 2 : newpts = 50;
+				break;
+		case 3 : newpts = 30;
+				break;
+		case 4 : newpts = 15;
+				break;
+		case 5 : newpts = 10;
+				break;
+		case 6 : newpts = 5;
+				break;
+
+		default: newpts = 0 ;
+				break;
+		}
+		return newpts;
 	}
 	
 	

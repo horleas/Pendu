@@ -20,6 +20,7 @@ public class Fenetre extends JFrame{
 	private Dimension size ;
 	AccueilPanel accueil = new AccueilPanel();
 	RulesPanel rules = new RulesPanel();
+	ScorePanel scorepanel = new ScorePanel();
 	JPanel pan = new JPanel();
 	JMenuBar menubar = new JMenuBar();
 	JMenu fichier = new JMenu("Fichier");
@@ -30,7 +31,7 @@ public class Fenetre extends JFrame{
 	JMenuItem regle = new JMenuItem("Règle");
 	JMenuItem question = new JMenuItem("?");
 	JMenuItem test = new JMenuItem ("test");
-	private JPanel conteneur = new JPanel();
+	static JPanel conteneur = new JPanel();
 	
 	public static int i = 0;
 
@@ -61,8 +62,35 @@ public class Fenetre extends JFrame{
 		fichier.setMnemonic('f');
 		fichier.add(nouveau);
 		nouveau.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+		nouveau.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				conteneur.removeAll();
+				conteneur.add(new GamePanel().getPanel(), BorderLayout.CENTER);
+				conteneur.revalidate();			
+			}
+	     });
+		
+		
+		
 		fichier.add(score);
 		score.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_DOWN_MASK));
+		score.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				
+				conteneur.removeAll();
+				conteneur.add(new ScorePanel().getPanel(), BorderLayout.CENTER);
+				conteneur.revalidate();
+				
+				
+			}
+	     });
+		
+		
 		fichier.addSeparator();
 		fichier.add(quitter);
 		quitter.addActionListener(new ActionListener(){
@@ -117,9 +145,9 @@ public class Fenetre extends JFrame{
 				
 				
 				conteneur.removeAll();
-				conteneur.add(new GamePanel().getPanel(), BorderLayout.CENTER);
+				conteneur.add(new ScorePanel().getPanel(), BorderLayout.CENTER);
 				conteneur.revalidate();
-				i++;
+				
 				
 			}
 	     });
