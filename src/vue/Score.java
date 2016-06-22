@@ -1,6 +1,8 @@
 package vue;
 
-public class Score {
+import java.io.Serializable;
+
+public class Score implements Serializable{
 
 	private String nom ="Default" ;
 	private int score = 0;
