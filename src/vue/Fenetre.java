@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -31,7 +32,10 @@ public class Fenetre extends JFrame{
 	JMenuItem regle = new JMenuItem("Règle");
 	JMenuItem question = new JMenuItem("?");
 	JMenuItem test = new JMenuItem ("test");
+	private JComboBox langchoice= new JComboBox();
 	static JPanel conteneur = new JPanel();
+	public static String language = "French";
+	
 	
 	public static int i = 0;
 
@@ -58,6 +62,9 @@ public class Fenetre extends JFrame{
 
 
 	private void initBarMenu() {
+		
+		SetlangMenu();
+		
 		menubar.add(fichier);
 		fichier.setMnemonic('f');
 		fichier.add(nouveau);
@@ -124,10 +131,24 @@ public class Fenetre extends JFrame{
 	    //Ajout de ce que doit faire le "?"
 	    question.addActionListener(new ActionListener(){
 	      public void actionPerformed(ActionEvent arg0) {
-	        JOptionPane jop = new JOptionPane();      
-	        String mess = "Pendu d'Horleas\n";
-	        mess += "Réaliser via le tuto OpenClassRoom\n";     
-	        jop.showMessageDialog(null, mess, "À propos", JOptionPane.INFORMATION_MESSAGE);    
+	    	  
+	    	  String langnow = getLang();
+	    	  if(langnow=="French"){
+	    		  JOptionPane jop = new JOptionPane();      
+	  	        String mess = "Pendu d'Horleas\n";
+	  	        mess += "Réaliser via le tutorial d'apprentissage d' OpenClassRoom\n";     
+	  	        jop.showMessageDialog(null, mess, "À propos", JOptionPane.INFORMATION_MESSAGE); 
+	  			
+	  		}else if(langnow=="English"){
+	  			
+	  			 JOptionPane jop = new JOptionPane();      
+	 	        String mess = "Hangman by Horleas\n";
+	 	        mess += "Idea from the tutorial of OpenClassRoom for Java learning\n";     
+	 	        jop.showMessageDialog(null, mess, "About", JOptionPane.INFORMATION_MESSAGE); 
+	  			
+	  		}
+	    	  
+	          
     
 			conteneur.removeAll();
 			conteneur.add(new AccueilPanel().getPanel(), BorderLayout.CENTER);
@@ -135,8 +156,37 @@ public class Fenetre extends JFrame{
 	      }            
 	    });
 	    
-	    //---------------ZONE DE TEST ---------------------------------------------//
+
+	    // JComboboc choice of Language
+	    langchoice.addItem("Français");
+	    langchoice.addItem("English");
+	    langchoice.setMaximumSize(new Dimension(100,20));
+	    langchoice.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if(langchoice.getSelectedItem().toString()=="Français"){
+					setLang("French");
+					SetlangMenu();
+				}else if(langchoice.getSelectedItem().toString()=="English"){
+					setLang("English");
+					SetlangMenu();
+				}
+				
+				conteneur.removeAll();
+				conteneur.add(new AccueilPanel().getPanel(), BorderLayout.CENTER);
+				conteneur.revalidate();
+
+			}
+			
+	    	
+	    });
 	    
+	    menubar.add(langchoice);
+	    
+	    //---------------ZONE DE TEST ---------------------------------------------//	    
+	    /*
 	    apropos.add(test);
 	    test.addActionListener(new ActionListener(){
 
@@ -150,15 +200,48 @@ public class Fenetre extends JFrame{
 				
 				
 			}
-	     });
+	     });*/
 	    
 	    //---------------FIN DE LA ZONE DE TEST ---------------------------------------------//
 		
 		this.setJMenuBar(menubar);
 	}
-	 /*
-	public Dimension getSize(){
-		return size;
-	}*/
+	
+	public static String getLang(){
+		return language;
+	}
+	
+	public static void setLang(String lang){
+		language = lang;
+	}
+	
+	
+	
+	public void SetlangMenu(){
+		String langnow = getLang();
+		if(langnow=="French"){
+			this.setTitle("Pendu by Horleas");
+			fichier.setText("Fichier");
+			apropos.setText("A propos");
+			nouveau.setText("Nouvelle partie");
+			regle.setText("Règles");
+			quitter.setText("Quitter");
+			
+			
+			
+			
+			
+		}else if(langnow=="English"){
+			this.setTitle("Hangman by Horleas");
+			
+			fichier.setText("Files");
+			apropos.setText("About");
+			nouveau.setText("New Game");
+			regle.setText("Rules");
+			quitter.setText("Quit");
+			
+		}
+	
+	}
 
 }

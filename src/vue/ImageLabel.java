@@ -33,23 +33,6 @@ public class ImageLabel extends JPanel {
 		this.add(panelimg, BorderLayout.CENTER);
 
 	}
-	/*
-	public ImageLabel(){
-		this.setBackground(Color.white);
-		this.setLayout(new BorderLayout());
-		
-		this.panelimg.setPreferredSize(dim);
-		
-
-
-		JLabel img = new JLabel(new ImageIcon("images/accueil.jpg"));
-		this.panelimg.add(img, BorderLayout.CENTER);
-		  
-
-		panelimg.setBackground(Color.white);
-		this.add(panelimg, BorderLayout.CENTER);
-
-	}*/
 	
 	public JPanel getPanel() {
 		// TODO Auto-generated method stub

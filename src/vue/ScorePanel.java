@@ -58,7 +58,7 @@ public class ScorePanel extends JPanel{
 		listscore.add(new Score("Tintamarre", 15,3));
 		listscore.add(new Score("Maracasse", 10,1));
 		listscore.add(new Score("Cassiopé", 5,1));
-		listscore.add(new Score("Pédé", 2,0));
+		listscore.add(new Score("Pierre", 2,0));
 		
 		liscorebool = false;
 		//ListIterator li = listscore.listIterator();

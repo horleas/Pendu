@@ -17,6 +17,13 @@ public class Score implements Serializable{
 	}
 	
 	public String toString(){
+		
+		String langnow = Fenetre.getLang();
+		if(langnow=="French"){
+			return nom +" : "+ Integer.toString(score) + " points en "+ nbrmot +" mots";
+		}else if(langnow=="English"){
+			return nom +" : "+ Integer.toString(score) + " points in "+ nbrmot +" words";
+		}
 		return nom +" : "+ Integer.toString(score) + " points en "+ nbrmot +" mots";
 	}
 	

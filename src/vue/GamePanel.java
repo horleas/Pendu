@@ -67,7 +67,18 @@ public class GamePanel extends JPanel {
 		
 		//nb mot trouver
 		nbremottrouver.setPreferredSize(dimtexte);
-		nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
+		
+		String langnow = Fenetre.getLang();
+		if(langnow=="French"){
+			nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
+			scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+			}
+		else if(langnow=="English"){ 
+	        nbremottrouver.setText("Number of words founds : "+ Integer.toString(nbrmot) );	        
+	        scoreactuel.setText("Your total Score is : "+ Integer.toString(pts) + " points \n" );
+		}
+		
+		
 		nbremottrouver.setFont(fontpetit);
 		nbremottrouver.setHorizontalAlignment(JLabel.CENTER);
 
@@ -77,7 +88,7 @@ public class GamePanel extends JPanel {
 		
 		//Score actuel
 		scoreactuel.setPreferredSize(dimtexte);
-		scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+
 		scoreactuel.setFont(fontpetit);
 		scoreactuel.setHorizontalAlignment(JLabel.CENTER);
 
@@ -195,55 +206,117 @@ public class GamePanel extends JPanel {
 	public void echec(){
 		
 
-		 JOptionPane jop = new JOptionPane();      
-	        String mess = "Vous avez perdu\n";
-	        mess += "le mot était " + word.getWord() +"\n";
-	        mess += "en " + nbrcoup +" coups \n";
-	        mess += "Vous avez accumulé " + pts +" points en "+nbrmot + " mot \n";
-	        jop.showMessageDialog(null, mess, "Perdu", JOptionPane.INFORMATION_MESSAGE);  
-	        
-	        if( pts >= ScorePanel.getworstscore()){
-	        	System.out.println("vous êtes dans le top 10");
-	        	
-	        	JOptionPane joppseudo = new JOptionPane();
-	            String pseudo = joppseudo.showInputDialog(null, "Veuillez écrire votre pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
-	            
-	            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
-	            
-	            
-	            
-				Fenetre.conteneur.removeAll();
-				Fenetre.conteneur.add(ScorePanel.getPanel(), BorderLayout.CENTER);
-				Fenetre.conteneur.revalidate();
-	            
-	        }
-	        
-	        
-	        nbrmot=0;
-	        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
-	        
-	        pts = 0;
-	        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " points \n" );
+		String langnow = Fenetre.getLang();
+		if(langnow=="French"){
+			 
+			 JOptionPane jop = new JOptionPane();      
+		        String mess = "Vous avez perdu\n";
+		        mess += "le mot était " + word.getWord() +"\n";
+		        mess += "en " + nbrcoup +" coups \n";
+		        mess += "Vous avez accumulé " + pts +" points en "+nbrmot + " mot \n";
+		        jop.showMessageDialog(null, mess, "Perdu", JOptionPane.INFORMATION_MESSAGE);  
+		        
+
+		        
+		        if( pts >= ScorePanel.getworstscore()){
+		        	System.out.println("vous êtes dans le top 10");
+		        	
+		        	JOptionPane joppseudo = new JOptionPane();
+		            String pseudo = joppseudo.showInputDialog(null, "Veuillez écrire votre pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+		            
+		            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
+		            
+		            
+		            
+					Fenetre.conteneur.removeAll();
+					Fenetre.conteneur.add(ScorePanel.getPanel(), BorderLayout.CENTER);
+					Fenetre.conteneur.revalidate();
+		            
+		        }
+		        
+		        
+		        nbrmot=0;
+		        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
+		        
+		        pts = 0;
+		        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " points \n" );
+			
+		}else if(langnow=="English"){
+			
+			 JOptionPane jop = new JOptionPane();      
+		        String mess = "Vous lost\n";
+		        mess += "The word was " + word.getWord() +"\n";
+		        mess += "You have earned " + pts +" points with "+nbrmot + " words \n";
+		        jop.showMessageDialog(null, mess, "Game Over", JOptionPane.INFORMATION_MESSAGE);    
+		        
+
+		        
+		        if( pts >= ScorePanel.getworstscore()){
+		        	System.out.println("You are in the top 10");
+		        	
+		        	JOptionPane joppseudo = new JOptionPane();
+		            String pseudo = joppseudo.showInputDialog(null, "Write your pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+		            
+		            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
+		            
+		            
+		            
+					Fenetre.conteneur.removeAll();
+					Fenetre.conteneur.add(ScorePanel.getPanel(), BorderLayout.CENTER);
+					Fenetre.conteneur.revalidate();
+		            
+		        }
+		        
+		        
+		        nbrmot=0;
+		        nbremottrouver.setText("Number of words founds : "+ Integer.toString(nbrmot) );
+		        
+		        pts = 0;		        
+		        scoreactuel.setText("Your total Score is : "+ Integer.toString(pts) + " points \n" );
+			
+		}
+		
+
 	        
 	        restartbouton();
 
 	}
 	
 	public void victory(){
-        //rajouter Score
-        nbrmot++;
-        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
         
-        pts = pts + getScorebyfault(nbrfaute);
-        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+		nbrmot++;
 		
-		 JOptionPane jop = new JOptionPane();      
-	        String mess = "Vous avez gagné\n";
-	        mess += "en " + nbrcoup +" coups avec " + nbrfaute + " fautes\n" ;
-	        mess += "vous gagner " +  getScorebyfault(nbrfaute) +" pts. Votre total de point est de  " +pts ;
-	        jop.showMessageDialog(null, mess, "Gagné", JOptionPane.INFORMATION_MESSAGE);   
+		pts = pts + getScorebyfault(nbrfaute);
+		
+		String langnow = Fenetre.getLang();
+		if(langnow=="French"){
+			 
+	        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
 	        
 	        
+	        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+			
+			 JOptionPane jop = new JOptionPane();      
+		        String mess = "Vous avez gagné\n";
+		        mess += "en " + nbrcoup +" coups avec " + nbrfaute + " fautes\n" ;
+		        mess += "vous gagner " +  getScorebyfault(nbrfaute) +" pts. Votre total de point est de  " +pts ;
+		        jop.showMessageDialog(null, mess, "Gagné", JOptionPane.INFORMATION_MESSAGE);   
+			
+		}else if(langnow=="English"){
+			
+	        nbremottrouver.setText("Number of words founds : "+ Integer.toString(nbrmot) );
+	        
+	        
+	        scoreactuel.setText("Your total Score is : "+ Integer.toString(pts) + " points \n" );
+			
+			 JOptionPane jop = new JOptionPane();      
+		        String mess = "You win\n";
+		        mess += "with " + nbrcoup +" try and with " + nbrfaute + " faults\n" ;
+		        mess += "You earned " +  getScorebyfault(nbrfaute) +" points. Your new score is  " +pts ;
+		        jop.showMessageDialog(null, mess, "Win", JOptionPane.INFORMATION_MESSAGE);   
+			
+		}
+
 	        restartbouton();
 
 	}
@@ -269,7 +342,6 @@ public class GamePanel extends JPanel {
 		}
 		return wordfound ;
 	}
-	//penser a ajouter wordcomplete pour condition de victoire non présence de "*"
 	
 	public void verifyword(char c){
 		String wordupdate= motatrouve.getText();

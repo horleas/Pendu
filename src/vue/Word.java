@@ -11,8 +11,7 @@ import javax.swing.JOptionPane;
 public class Word {
 	private String word ="";
 	private String secretword="";
-	private int error = 0;
-	private int nbrcoup = 0; 
+
 	
 	public Word(){
 		do{
@@ -29,7 +28,17 @@ public class Word {
 		secretword="";
 		
 		try{
+			
 			LineNumberReader fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
+			String langnow = Fenetre.getLang();
+			if(langnow=="French"){
+				fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
+			}else if(langnow=="English"){
+				
+				fnr = new LineNumberReader(new FileReader(new File("dico/dictionnary.txt")));
+				
+			}
+			
 			
 			while((carac = fnr.read()) != -1){
 				if(fnr.getLineNumber() == (i+1) ){
@@ -51,8 +60,6 @@ public class Word {
 			}
 			
 			fnr.close();
-			error = 0;
-			nbrcoup =0;
 			
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Erreur de chargement depuis le fichier de mots !", "ERREUR", JOptionPane.ERROR_MESSAGE);
