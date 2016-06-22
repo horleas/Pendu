@@ -40,6 +40,7 @@ public class GamePanel extends JPanel {
 	private char accenttabC[] = {'Ç','C'};
 	private char accenttabO[] = {'Ö','O'};
 	private char accenttabU[] = {'Ú','Û','Ù','Ü','U'};
+	private char accenttabI[] = {'Ï','I'};
 	
 	
 	private JButton[] tabButton = new JButton[tabchar.length];
@@ -159,7 +160,9 @@ public class GamePanel extends JPanel {
 				verifyword(accenttabU);
 			}else if (lettretape == 'C'){
 				verifyword(accenttabC);
-			}else{			
+			}else if (lettretape == 'I'){
+				verifyword(accenttabI);
+			}			else{			
 				verifyword(lettretape);
 			}
 			nbrcoup++;
@@ -220,9 +223,12 @@ public class GamePanel extends JPanel {
 		        
 		        if( pts >= ScorePanel.getworstscore()){
 		        	System.out.println("vous êtes dans le top 10");
-		        	
+		        	 
 		        	JOptionPane joppseudo = new JOptionPane();
-		            String pseudo = joppseudo.showInputDialog(null, "Veuillez écrire votre pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+		        	String pseudo = joppseudo.showInputDialog(null, "Veuillez écrire votre pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+		            if(pseudo==null){
+		            	pseudo = "Anonyme";
+		            }
 		            
 		            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
 		            
@@ -253,10 +259,12 @@ public class GamePanel extends JPanel {
 		        
 		        if( pts >= ScorePanel.getworstscore()){
 		        	System.out.println("You are in the top 10");
-		        	
+		        	 
 		        	JOptionPane joppseudo = new JOptionPane();
-		            String pseudo = joppseudo.showInputDialog(null, "Write your pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
-		            
+		        	String pseudo = joppseudo.showInputDialog(null, "Write your pseudo !", "Top 10 !", JOptionPane.QUESTION_MESSAGE);
+		            if(pseudo==null){
+		            	pseudo = "Anonymous";
+		            }
 		            ScorePanel.newScore(new Score(pseudo,pts,nbrmot));
 		            
 		            
