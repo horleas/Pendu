@@ -12,7 +12,7 @@ Version :
 
 21 June =  ScorePanel / Score
 
-22 June = Add Serialisation of the score
+22 June = Add Serialisation of the score / English Language and option to switch dictionary and language / Correction of bug with the Ï
 
 
-next to do : Add English language
+next to do : make a Jar File
