@@ -194,9 +194,11 @@ public class GamePanel extends JPanel {
 		  
 			do{
 				word.initWord();
-				}while(word.getWord().length()<3);
+				}while(word.getWord().length()<4);
+			
 			
 			motatrouve.setText(setSecretWordetoile());
+			verifyword('-');
 			
 			rightcontent.removeAll();
 			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
@@ -334,6 +336,7 @@ public class GamePanel extends JPanel {
 		String secret = "";
 		
 		for (int k=0 ;k<word.getWord().length() ; k++ ){
+			
 			secret +="*";
 		}
 		
