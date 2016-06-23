@@ -1,6 +1,6 @@
 # Pendu by Horleas
 
-In the Tutorial of OpenClassRoom, they propose to make our own Hangingman game. I try to make it similar in the aspect but the coding is different.
+In the Tutorial of OpenClassRoom, they propose to make our own Hangman game. I try to make it similar in the aspect but the coding is different.
 
 Version :
 
@@ -14,5 +14,4 @@ Version :
 
 22 June = Add Serialisation of the score / English Language and option to switch dictionary and language / Correction of bug with the Ï and no name
 
-
-next to do : make a Jar File / resolve bug with - word
+23 June =  correction of bug with word-word in French Langage
