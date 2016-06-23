@@ -102,6 +102,8 @@ public class GamePanel extends JPanel {
 
 		this.motatrouve.setForeground(Color.blue);
 		motatrouve.setText(this.setSecretWordetoile());
+		//set the - to appear in the word ( all optional caractère outside the alphabet must be here for the first word
+		verifyword('-');
 		motatrouve.setHorizontalAlignment(JLabel.CENTER);
 		this.pantexte.add(motatrouve,BorderLayout.CENTER);
 		
@@ -199,6 +201,7 @@ public class GamePanel extends JPanel {
 			
 			motatrouve.setText(setSecretWordetoile());
 			verifyword('-');
+			verifyword('A');
 			
 			rightcontent.removeAll();
 			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
