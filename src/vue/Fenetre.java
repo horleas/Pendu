@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -22,6 +23,7 @@ public class Fenetre extends JFrame{
 	AccueilPanel accueil = new AccueilPanel();
 	RulesPanel rules = new RulesPanel();
 	ScorePanel scorepanel = new ScorePanel();
+	
 	JPanel pan = new JPanel();
 	JMenuBar menubar = new JMenuBar();
 	JMenu fichier = new JMenu("Fichier");
@@ -32,7 +34,10 @@ public class Fenetre extends JFrame{
 	JMenuItem regle = new JMenuItem("Règle");
 	JMenuItem question = new JMenuItem("?");
 	JMenuItem test = new JMenuItem ("test");
+	
 	private JComboBox langchoice= new JComboBox();
+	private JCheckBox checkeasymode = new JCheckBox();
+	private static boolean booeasymode = false ;
 	static JPanel conteneur = new JPanel();
 	public static String language = "French";
 	
@@ -185,7 +190,27 @@ public class Fenetre extends JFrame{
 	    
 	    menubar.add(langchoice);
 	    
-	    //---------------ZONE DE TEST ---------------------------------------------//	    
+	    //---------------ZONE DE TEST ---------------------------------------------//
+	    
+
+  	  	checkeasymode.setText("Mode Facile");
+  	  	checkeasymode.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(checkeasymode.isSelected()){setBooeasymode(true);}
+				else{setBooeasymode(false);}
+				
+				conteneur.removeAll();
+				conteneur.add(new GamePanel().getPanel(), BorderLayout.CENTER);
+				conteneur.revalidate();	
+				
+				
+			}
+	     });
+  	  	
+	    menubar.add(checkeasymode);
+	    
 	    /*
 	    apropos.add(test);
 	    test.addActionListener(new ActionListener(){
@@ -226,6 +251,7 @@ public class Fenetre extends JFrame{
 			nouveau.setText("Nouvelle partie");
 			regle.setText("Règles");
 			quitter.setText("Quitter");
+			checkeasymode.setText("Mode Facile");
 			
 			
 			
@@ -239,9 +265,20 @@ public class Fenetre extends JFrame{
 			nouveau.setText("New Game");
 			regle.setText("Rules");
 			quitter.setText("Quit");
+			checkeasymode.setText("Easy Mode");
 			
 		}
 	
+	}
+	
+	public static boolean isBooeasymode() {
+		return booeasymode;
+	}
+
+
+
+	public void setBooeasymode(boolean booeasymode) {
+		this.booeasymode = booeasymode;
 	}
 
 }

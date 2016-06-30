@@ -40,7 +40,7 @@ public class GamePanel extends JPanel {
 	private char accenttabC[] = {'Ç','C'};
 	private char accenttabO[] = {'Ö','O'};
 	private char accenttabU[] = {'Ú','Û','Ù','Ü','U'};
-	private char accenttabI[] = {'Ï','I'};
+	private char accenttabI[] = {'Ï','Î','I'};
 	
 	
 	private JButton[] tabButton = new JButton[tabchar.length];
@@ -48,6 +48,7 @@ public class GamePanel extends JPanel {
 	private static int pts = 0 ;
 	private int nbrfaute = 0 ;
 	private int nbrcoup = 0 ;
+
 	
 	
 	public GamePanel(){
@@ -104,6 +105,10 @@ public class GamePanel extends JPanel {
 		motatrouve.setText(this.setSecretWordetoile());
 		//set the - to appear in the word ( all optional caractère outside the alphabet must be here for the first word
 		verifyword('-');
+		String lettreeasyrecup = easymode();
+		lettreeasyrecup = lettreeasyrecup.concat("  ");
+		
+
 		motatrouve.setHorizontalAlignment(JLabel.CENTER);
 		this.pantexte.add(motatrouve,BorderLayout.CENTER);
 		
@@ -121,6 +126,13 @@ public class GamePanel extends JPanel {
 			tabButton[j].setPreferredSize(dimbouton);
 			tabButton[j].addActionListener(new BoutonListener());
 			this.panlettre.add(tabButton[j]);
+			
+		}
+		
+		for( JButton refreshbouton : tabButton ){
+			if(refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(0)||refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(1)){
+				refreshbouton.setEnabled(false);
+			}
 			
 		}
 		
@@ -201,7 +213,15 @@ public class GamePanel extends JPanel {
 			
 			motatrouve.setText(setSecretWordetoile());
 			verifyword('-');
-			verifyword('A');
+			String lettreeasyrecup = easymode();
+			lettreeasyrecup = lettreeasyrecup.concat("  ");
+			
+			for( JButton refreshbouton : tabButton ){
+				if(refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(0)||refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(1)){
+					refreshbouton.setEnabled(false);
+				}
+				
+			}
 			
 			rightcontent.removeAll();
 			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
@@ -311,7 +331,8 @@ public class GamePanel extends JPanel {
 			
 			 JOptionPane jop = new JOptionPane();      
 		        String mess = "Vous avez gagné\n";
-		        mess += "en " + nbrcoup +" coups avec " + nbrfaute + " fautes\n" ;
+		        mess += "en " + nbrcoup +" coups avec " + nbrfaute + " fautes " ;
+		        if(Fenetre.isBooeasymode()){mess +="avec le mode facile. \n"; }
 		        mess += "vous gagner " +  getScorebyfault(nbrfaute) +" pts. Votre total de point est de  " +pts ;
 		        jop.showMessageDialog(null, mess, "Gagné", JOptionPane.INFORMATION_MESSAGE);   
 			
@@ -324,7 +345,8 @@ public class GamePanel extends JPanel {
 			
 			 JOptionPane jop = new JOptionPane();      
 		        String mess = "You win\n";
-		        mess += "with " + nbrcoup +" try and with " + nbrfaute + " faults\n" ;
+		        mess += "with " + nbrcoup +" try and with " + nbrfaute + " faults " ;
+		        if(Fenetre.isBooeasymode()){mess +="with the easy mode selected. \n"; }
 		        mess += "You earned " +  getScorebyfault(nbrfaute) +" points. Your new score is  " +pts ;
 		        jop.showMessageDialog(null, mess, "Win", JOptionPane.INFORMATION_MESSAGE);   
 			
@@ -428,15 +450,212 @@ public class GamePanel extends JPanel {
 		default: newpts = 0 ;
 				break;
 		}
+		if(Fenetre.isBooeasymode()){newpts = newpts/2;}
+		
 		return newpts;
 	}
 	
 	
+	public String easymode(){
+		String lettretrouver ="";
+		
+		if(Fenetre.isBooeasymode()&& word.getWord().length()> 4 )
+		{
+			char firstchar =(char)word.getWord().charAt(0);
+			boolean foundfirst = false;
+			
+			//breaking go to next 
+			while(true){
+			
+				//must take care of french word which begins with an accent/Special letter.
+				for(char testchar :accenttabE){
+					if (firstchar == testchar){
+							verifyword(accenttabE);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='E';	// to be sure to return the name text of the button associate because É != E
+					break;
+					}
+				
+				
+				for(char testchar :accenttabA){
+					if (firstchar == testchar){
+							verifyword(accenttabA);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='A';
+					break;
+					}
+				
+				
+				
+				for(char testchar :accenttabO){
+					if (firstchar == testchar){
+							verifyword(accenttabO);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='O';
+					break;
+					}
+				
+				for(char testchar :accenttabU){
+					if (firstchar == testchar){
+							verifyword(accenttabU);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='U';
+					break;
+					}
+				
+				
+				for(char testchar :accenttabI){
+					if (firstchar == testchar){
+							verifyword(accenttabI);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='I';
+					break;
+					}
+				
+				for(char testchar :accenttabC){
+					if (firstchar == testchar){
+							verifyword(accenttabC);
+							foundfirst = true;
+							break;
+						}
+				}
+				if (foundfirst){
+					firstchar='C';
+					break;
+					}
+				
+				
+				verifyword(firstchar);
+				break;
+			}
+			lettretrouver = lettretrouver.concat(Character.toString(firstchar));
+			System.out.println("first letter : "+firstchar);
+			if(word.getWord().length()> 7 )
+			{
+				char lastchar =(char)word.getWord().charAt(word.getWord().length()-1);
+				boolean foundlast = false;
+				
+				//breaking go to next 
+				while(true){
+				
+					//must take care of french word which end with an accent/Special letter.
+					for(char testchar :accenttabE){
+						if (lastchar == testchar){
+								verifyword(accenttabE);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='E';
+						break;
+						}
+					
+					
+					for(char testchar :accenttabA){
+						if (lastchar == testchar){
+								verifyword(accenttabA);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='A';
+						break;
+						}
+					
+					
+					for(char testchar :accenttabO){
+						if (lastchar == testchar){
+								verifyword(accenttabO);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='O';
+						break;
+						}
+					
+					
+					for(char testchar :accenttabU){
+						if (lastchar == testchar){
+								verifyword(accenttabU);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='U';
+						break;
+						}
+					
+					
+					for(char testchar :accenttabI){
+						if (lastchar == testchar){
+								verifyword(accenttabI);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='I';
+						break;
+						}
+					
+					
+					for(char testchar :accenttabC){
+						if (lastchar == testchar){
+								verifyword(accenttabC);
+								foundlast = true;
+								break;
+							}
+					}
+					if (foundlast){
+						firstchar='C';
+						break;
+						}
+					
+					verifyword(lastchar);
+					break;
+				}
+				lettretrouver = lettretrouver.concat(Character.toString(lastchar));
+				System.out.println("last letter : "+lastchar);
+			}
+		}
+		System.out.println(" letters in first and last position : "+lettretrouver);
+		return lettretrouver;
+	}
+	
 	
 	public JPanel getPanel() {
-		// TODO Auto-generated method stub
+
 		return this.pangame;
 	}
+
+
+
+
 	
 	
 	
