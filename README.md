@@ -15,3 +15,7 @@ Version :
 22 June = Add Serialisation of the score / English Language and option to switch dictionary and language / Correction of bug with the Ï and no name
 
 23 June =  correction of bug with word-word in French Langage
+
+30 June = add easy mode
+
+TODO : add buyable bonus
