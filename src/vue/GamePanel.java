@@ -24,15 +24,24 @@ public class GamePanel extends JPanel {
 	private JPanel pangame = new JPanel();
 	private JPanel panlettre = new JPanel();
 	private JPanel pantexte = new JPanel();
+	private JPanel panbonus = new JPanel();
 	private JPanel leftcontent = new JPanel();
 	private JPanel rightcontent = new JPanel();
 
+	private JButton disable3 = new JButton();
+	private int priceToDisable3 = 20 ;
+	private JButton buy1letter = new JButton();
+	private int priceToBuy1Letter = 40 ;
+	private JButton upgradenbrfault = new JButton();
+	private int priceToUpgradeNbrFault = 100 ;
+	
 	
 	private Dimension dimleft = new Dimension (400,600);
 	private Dimension dimright = new Dimension (300,600);
 	private Dimension dimbouton = new Dimension (50,30);
 	private Dimension dimtexte = new Dimension (400,20);
-	private Dimension dimlettre = new Dimension (400, 100);
+	private Dimension dimlettre = new Dimension (400,100);
+	private Dimension dimbonus = new Dimension (400,200);
 	
 	private  String tabchar[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	private char accenttabE[] = {'Ê','Ë','É','È','E'};
@@ -48,6 +57,7 @@ public class GamePanel extends JPanel {
 	private static int pts = 0 ;
 	private int nbrfaute = 0 ;
 	private int nbrcoup = 0 ;
+	private int nbrfautemax = 6 ;
 
 	
 	
@@ -137,10 +147,115 @@ public class GamePanel extends JPanel {
 		}
 		
 		this.panlettre.setBackground(Color.white);
-		
-		
 		this.leftcontent.add(panlettre,BorderLayout.CENTER);
+		
+		
+		//Bonus Panel
+		
+		this.panbonus.setPreferredSize(dimbonus);
+		// disable 3 letter which are not in the word for 20 pts
+		this.panbonus.add(disable3);
+		disable3.setEnabled(false);
+		disable3.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("remove 3 useless letter");
+				
+				
+				int randomletter = (int) (Math.random()*tabchar.length);
+				System.out.println(word.getWord()+" "+randomletter);
+			}
+	
+		});
+		
+		
+		// buy a random letter for 40 pts
+		this.panbonus.add(buy1letter);
+		buy1letter.setEnabled(false);
+		buy1letter.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("place 1 letter");
+				int randomletter = 0 ;
+				char charToTest = 'a';
+				boolean booIsCharInWord = false ;
+				
+				do{
+					randomletter = (int) (Math.random()*tabchar.length);
+					charToTest = tabchar[randomletter].toUpperCase().charAt(0);
+					System.out.println(word.getWord()+" "+randomletter +charToTest);
+					 
+					
+					if (charToTest == 'E'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabE);
+					}else if (charToTest == 'A'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabA);
+					}else if (charToTest == 'O'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabO);
+					}else if (charToTest == 'U'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabU);
+					}else if (charToTest == 'C'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabC);
+					}else if (charToTest == 'I'){
+						booIsCharInWord = !isCharInWord(word.getWord(),accenttabI);
+					}else{			
+						booIsCharInWord = !isCharInWord(word.getWord(),charToTest);
+					}
+					
+					
+					
+				}while( (booIsCharInWord) || (!isButtonCharUp(charToTest)));
+				
+				for( JButton refreshbouton : tabButton ){
+					if(refreshbouton.getText().charAt(0)== charToTest){
+						refreshbouton.setEnabled(false);
+					}
+					
+				}
+				
+				if (charToTest == 'E'){
+					verifyword(accenttabE);
+				}else if (charToTest == 'A'){
+					verifyword(accenttabA);
+				}else if (charToTest == 'O'){
+					verifyword(accenttabO);
+				}else if (charToTest == 'U'){
+					verifyword(accenttabU);
+				}else if (charToTest == 'C'){
+					verifyword(accenttabC);
+				}else if (charToTest == 'I'){
+					verifyword(accenttabI);
+				}else{			
+					verifyword(charToTest);
+				}
+				
+
+				
+			}
+
+		});
+		
+		
+		// augment nbrfault before lose by 1 for 100pts ( max 3)
+		this.panbonus.add(upgradenbrfault);
+		upgradenbrfault.setEnabled(false);
+		
+		if(langnow=="French"){
+			disable3.setText("enleve 3 lettres inutiles (20pts)");
+			buy1letter.setText("place toutes les itérations \n d'une lettre au hasard dans le mot (40pts)");
+			upgradenbrfault.setText("augmente le nombre d'erreur max de "+nbrfautemax+" à "+(nbrfautemax+1)+"(100pts)");
+			}
+		else if(langnow=="English"){ 
+			disable3.setText("remove 3 useless char (20pts)");
+			buy1letter.setText("place every iteration of a random char in the word");
+			upgradenbrfault.setText("improve max error "+nbrfautemax+" to "+(nbrfautemax+1));
+		}
+
+		this.panbonus.setBackground(Color.cyan);
+		this.leftcontent.add(panbonus, BorderLayout.SOUTH);
 		leftcontent.setBackground(Color.white);
+		
+		
 
 		
 		
@@ -193,7 +308,7 @@ public class GamePanel extends JPanel {
 			System.out.println(word.getWord());
 			
 			
-			if (nbrfaute > 6){
+			if (nbrfaute > nbrfautemax){
 				echec();
 			}
 			
@@ -203,8 +318,7 @@ public class GamePanel extends JPanel {
 		for( JButton refreshbouton : tabButton ){
 			refreshbouton.setEnabled(true);
 		}
-		  nbrfaute = 0;	
-		  nbrcoup = 0 ;
+
 		  
 			do{
 				word.initWord();
@@ -215,13 +329,22 @@ public class GamePanel extends JPanel {
 			verifyword('-');
 			String lettreeasyrecup = easymode();
 			lettreeasyrecup = lettreeasyrecup.concat("  ");
-			
+			  nbrfaute = 0;	
+			  nbrcoup = 0 ;
+			  modif = true ;
 			for( JButton refreshbouton : tabButton ){
 				if(refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(0)||refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(1)){
 					refreshbouton.setEnabled(false);
 				}
 				
 			}
+			
+			if(pts>=priceToDisable3){disable3.setEnabled(true);}
+			else{disable3.setEnabled(false);}
+			if(pts>=priceToBuy1Letter){buy1letter.setEnabled(true);}
+			else{buy1letter.setEnabled(false);}
+			if(pts>=priceToUpgradeNbrFault){upgradenbrfault.setEnabled(true);}
+			else{upgradenbrfault.setEnabled(false);}
 			
 			rightcontent.removeAll();
 			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
@@ -567,7 +690,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='E';
+						lastchar='E';
 						break;
 						}
 					
@@ -580,7 +703,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='A';
+						lastchar='A';
 						break;
 						}
 					
@@ -593,7 +716,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='O';
+						lastchar='O';
 						break;
 						}
 					
@@ -606,7 +729,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='U';
+						lastchar='U';
 						break;
 						}
 					
@@ -619,7 +742,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='I';
+						lastchar='I';
 						break;
 						}
 					
@@ -632,7 +755,7 @@ public class GamePanel extends JPanel {
 							}
 					}
 					if (foundlast){
-						firstchar='C';
+						lastchar='C';
 						break;
 						}
 					
@@ -646,6 +769,41 @@ public class GamePanel extends JPanel {
 		System.out.println(" letters in first and last position : "+lettretrouver);
 		return lettretrouver;
 	}
+	
+	public boolean isCharInWord(String word, char charToTest) {
+		
+		for(int i=0;i< word.length();i++)
+			if(word.charAt(i)==charToTest){
+				return true;
+			}
+
+		return false;
+	}
+	
+	public boolean isCharInWord(String word, char charToTest[]) {
+		
+		for(int j=0;j<charToTest.length ;j++){
+			for(int i=0;i< word.length();i++)
+				if(word.charAt(i)==charToTest[j]){
+					return true;
+				}
+		}
+		return false;
+	}
+	
+	private boolean isButtonCharUp(char charToTest) {
+		for( JButton refreshbouton : tabButton ){
+			if(refreshbouton.getText().charAt(0)== charToTest){
+				if(refreshbouton.isEnabled()==true){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
 	
 	
 	public JPanel getPanel() {
