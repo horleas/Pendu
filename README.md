@@ -16,6 +16,8 @@ Version :
 
 23 June =  correction of bug with word-word in French Langage
 
-30 June = add easy mode
+30 June = add easy mode ( Give 1st letter for word >4 letters and the 1st and last for >7letters but divide score by 2)
 
-TODO : add buyable bonus
+02 July = add buyable bonus ( Disable 3 useless letters / Place every iteration of 1 letter in the word / Augment your nombre of fault before getting Hang)
+
+TODO : put in Jar File
