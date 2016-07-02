@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,12 +41,13 @@ public class GamePanel extends JPanel {
 	private Dimension dimtexte = new Dimension (400,20);
 	private Dimension dimlettre = new Dimension (400,100);
 	private Dimension dimbonus = new Dimension (400,200);
+	private Dimension dimboutonbonus = new Dimension (300,30);
 	
 	private  String tabchar[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	private char accenttabE[] = {'Ê','Ë','É','È','E'};
 	private char accenttabA[] = {'Á','Â','À','Ã','Ä','A'};
 	private char accenttabC[] = {'Ç','C'};
-	private char accenttabO[] = {'Ö','O'};
+	private char accenttabO[] = {'Ö','Ô','O'};
 	private char accenttabU[] = {'Ú','Û','Ù','Ü','U'};
 	private char accenttabI[] = {'Ï','Î','I'};
 	
@@ -58,6 +58,13 @@ public class GamePanel extends JPanel {
 	private int nbrfaute = 0 ;
 	private int nbrcoup = 0 ;
 	private int nbrfautemax = 6 ;
+	private int maxDisable3 = 3 ;
+	private int varDisable3 = 0 ;
+	private int valupgradenbrfault = 0;
+	private int maxupgradenbrfault = 3 ;
+	
+	private Font normalblack =new Font("Courrier",Font.CENTER_BASELINE,12);
+	private Font errorred =new Font("Courrier",Font.BOLD,12);
 
 	
 	
@@ -65,7 +72,7 @@ public class GamePanel extends JPanel {
 		this.setBackground(Color.white);
 		
 		nbrmot = 0 ; 
-		pts = 0 ;
+		pts = 600 ;
 		nbrfaute = 0 ;
 		nbrcoup = 0 ;
 		
@@ -155,26 +162,71 @@ public class GamePanel extends JPanel {
 		this.panbonus.setPreferredSize(dimbonus);
 		// disable 3 letter which are not in the word for 20 pts
 		this.panbonus.add(disable3);
+		disable3.setPreferredSize(dimboutonbonus);
 		disable3.setEnabled(false);
 		disable3.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("remove 3 useless letter");
+
+				varDisable3 = varDisable3+1;
+				updatePoint(20,0);
 				
 				
-				int randomletter = (int) (Math.random()*tabchar.length);
-				System.out.println(word.getWord()+" "+randomletter);
+				int randomletter = 0 ;
+				char charToTest = 'a';
+				boolean booIsCharInWord = false ;
+				
+				
+				for(int i=0;i<3;i++){
+					do{
+						randomletter = (int) (Math.random()*tabchar.length);
+						charToTest = tabchar[randomletter].toUpperCase().charAt(0);
+						System.out.println(word.getWord()+" "+randomletter +charToTest);
+						 
+						
+						if (charToTest == 'E'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabE);
+						}else if (charToTest == 'A'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabA);
+						}else if (charToTest == 'O'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabO);
+						}else if (charToTest == 'U'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabU);
+						}else if (charToTest == 'C'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabC);
+						}else if (charToTest == 'I'){
+							booIsCharInWord = !isCharInWord(word.getWord(),accenttabI);
+						}else{			
+							booIsCharInWord = !isCharInWord(word.getWord(),charToTest);
+						}
+						
+						
+						
+					}while( (!booIsCharInWord) || (!isButtonCharUp(charToTest)));
+					
+					for( JButton refreshbouton : tabButton ){
+						if(refreshbouton.getText().charAt(0)== charToTest){
+							refreshbouton.setEnabled(false);
+						}
+					}
+					System.out.println(charToTest +" is not in the word : "+word.getWord()+"\n varDisable3 is : "+varDisable3);
+				}
 			}
-	
 		});
 		
 		
 		// buy a random letter for 40 pts
 		this.panbonus.add(buy1letter);
 		buy1letter.setEnabled(false);
+		buy1letter.setPreferredSize(dimboutonbonus);
 		buy1letter.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				updatePoint(40,0);
+
+				
 				System.out.println("place 1 letter");
 				int randomletter = 0 ;
 				char charToTest = 'a';
@@ -229,8 +281,12 @@ public class GamePanel extends JPanel {
 					verifyword(charToTest);
 				}
 				
+				if(pts<40){
+					buy1letter.setEnabled(false);
+				}else{
+					buy1letter.setEnabled(true);
+				}
 
-				
 			}
 
 		});
@@ -239,17 +295,22 @@ public class GamePanel extends JPanel {
 		// augment nbrfault before lose by 1 for 100pts ( max 3)
 		this.panbonus.add(upgradenbrfault);
 		upgradenbrfault.setEnabled(false);
-		
-		if(langnow=="French"){
-			disable3.setText("enleve 3 lettres inutiles (20pts)");
-			buy1letter.setText("place toutes les itérations \n d'une lettre au hasard dans le mot (40pts)");
-			upgradenbrfault.setText("augmente le nombre d'erreur max de "+nbrfautemax+" à "+(nbrfautemax+1)+"(100pts)");
+		upgradenbrfault.setPreferredSize(dimboutonbonus);
+		upgradenbrfault.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				valupgradenbrfault++;
+				updatePoint(100,0);
+				
+				rightcontent.removeAll();
+				rightcontent.add(new ImageLabel(Integer.toString(nbrfaute-valupgradenbrfault+3)).getPanel(), BorderLayout.CENTER);
+				rightcontent.revalidate();
+
 			}
-		else if(langnow=="English"){ 
-			disable3.setText("remove 3 useless char (20pts)");
-			buy1letter.setText("place every iteration of a random char in the word");
-			upgradenbrfault.setText("improve max error "+nbrfautemax+" to "+(nbrfautemax+1));
-		}
+			
+			
+		});
 
 		this.panbonus.setBackground(Color.cyan);
 		this.leftcontent.add(panbonus, BorderLayout.SOUTH);
@@ -261,13 +322,14 @@ public class GamePanel extends JPanel {
 		
 		// RIGHT CONTENT
 		
-		 ImageLabel image = new ImageLabel(Integer.toString(nbrfaute));
+		 ImageLabel image = new ImageLabel(Integer.toString(nbrfaute-valupgradenbrfault+3));
 		 this.rightcontent.add(image, BorderLayout.CENTER);
 		 
 		 
 		this.pangame.add(leftcontent, BorderLayout.CENTER);
 		this.pangame.add(rightcontent, BorderLayout.WEST);
 
+	 updatePoint(0,0);
 
 	}
 	
@@ -300,7 +362,7 @@ public class GamePanel extends JPanel {
 			else{
 			nbrfaute++;
 			rightcontent.removeAll();
-			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
+			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute-valupgradenbrfault+3)).getPanel(), BorderLayout.CENTER);
 			rightcontent.revalidate();
 			}
 			
@@ -308,7 +370,7 @@ public class GamePanel extends JPanel {
 			System.out.println(word.getWord());
 			
 			
-			if (nbrfaute > nbrfautemax){
+			if (nbrfaute > nbrfautemax+valupgradenbrfault){
 				echec();
 			}
 			
@@ -332,22 +394,18 @@ public class GamePanel extends JPanel {
 			  nbrfaute = 0;	
 			  nbrcoup = 0 ;
 			  modif = true ;
+			  varDisable3 = 0;
 			for( JButton refreshbouton : tabButton ){
 				if(refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(0)||refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(1)){
 					refreshbouton.setEnabled(false);
 				}
 				
 			}
-			
-			if(pts>=priceToDisable3){disable3.setEnabled(true);}
-			else{disable3.setEnabled(false);}
-			if(pts>=priceToBuy1Letter){buy1letter.setEnabled(true);}
-			else{buy1letter.setEnabled(false);}
-			if(pts>=priceToUpgradeNbrFault){upgradenbrfault.setEnabled(true);}
-			else{upgradenbrfault.setEnabled(false);}
+
+			updatePoint(0,0);
 			
 			rightcontent.removeAll();
-			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute)).getPanel(), BorderLayout.CENTER);
+			rightcontent.add(new ImageLabel(Integer.toString(nbrfaute-valupgradenbrfault+3)).getPanel(), BorderLayout.CENTER);
 			rightcontent.revalidate();
 		  
 	}
@@ -387,14 +445,7 @@ public class GamePanel extends JPanel {
 					Fenetre.conteneur.revalidate();
 		            
 		        }
-		        
-		        
-		        nbrmot=0;
-		        nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
-		        
-		        pts = 0;
-		        scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " points \n" );
-			
+		        			
 		}else if(langnow=="English"){
 			
 			 JOptionPane jop = new JOptionPane();      
@@ -422,14 +473,6 @@ public class GamePanel extends JPanel {
 					Fenetre.conteneur.revalidate();
 		            
 		        }
-		        
-		        
-		        nbrmot=0;
-		        nbremottrouver.setText("Number of words founds : "+ Integer.toString(nbrmot) );
-		        
-		        pts = 0;		        
-		        scoreactuel.setText("Your total Score is : "+ Integer.toString(pts) + " points \n" );
-			
 		}
 		
 
@@ -442,7 +485,7 @@ public class GamePanel extends JPanel {
         
 		nbrmot++;
 		
-		pts = pts + getScorebyfault(nbrfaute);
+		updatePoint(0,getScorebyfault(nbrfaute));
 		
 		String langnow = Fenetre.getLang();
 		if(langnow=="French"){
@@ -570,7 +613,7 @@ public class GamePanel extends JPanel {
 		case 6 : newpts = 5;
 				break;
 
-		default: newpts = 0 ;
+		default: newpts = 5 ;
 				break;
 		}
 		if(Fenetre.isBooeasymode()){newpts = newpts/2;}
@@ -802,6 +845,107 @@ public class GamePanel extends JPanel {
 			}
 		}
 		return false;
+	}
+	
+	private void updatePoint(int cost,int gain){
+		
+		pts = pts - cost;
+		pts = pts + gain;
+		
+		
+		
+		
+		String langnow = Fenetre.getLang();
+		if(langnow=="French"){
+			disable3.setText("Enleve 3 lettres inutiles (20pts)");
+			buy1letter.setText("Place toutes les itérations d'une lettre (40pts)");
+			upgradenbrfault.setText("Nombre d'erreur max : "+(nbrfautemax+valupgradenbrfault)+" => "+(nbrfautemax+valupgradenbrfault+1)+" (100pts)");
+			}
+		else if(langnow=="English"){ 
+			disable3.setText("Remove 3 useless char (20pts)");
+			buy1letter.setText("Place every iteration of  a char (40pts)");
+			upgradenbrfault.setText("Improve max error "+nbrfautemax+" to "+(nbrfautemax+1)+" (100pts)");
+		}
+		
+		if(langnow=="French"){
+			scoreactuel.setText("Votre score actuel est de "+ Integer.toString(pts) + " point \n" );
+			}
+		else if(langnow=="English"){        
+	        scoreactuel.setText("Your total Score is : "+ Integer.toString(pts) + " points \n" );
+		}
+		
+		
+		//Disable3
+		if(pts>=priceToDisable3  && varDisable3 < maxDisable3) {
+			disable3.setFont(normalblack);
+			disable3.setEnabled(true);
+			}
+		else{
+			if(pts<priceToDisable3){
+				if(langnow=="French"){
+					disable3.setText("Pas assez de points (20pts)");
+				}
+				else if(langnow=="English"){ 
+					disable3.setText("Not enough points  (20pts)");
+				}
+			}else{
+				if(langnow=="French"){
+					disable3.setText("Maximum 3 utilisations par mot (20pts)");
+				}
+				else if(langnow=="English"){ 
+					disable3.setText("Only 3 use by word (20pts)");
+
+				}
+			}
+
+			disable3.setFont(errorred);
+			disable3.setEnabled(false);
+			}
+		
+		//BuyLetter
+		if(pts>=priceToBuy1Letter){
+			buy1letter.setFont(normalblack);
+			buy1letter.setEnabled(true);
+			}
+		else{
+			if(langnow=="French"){
+				buy1letter.setText("Pas assez de points (40pts)");
+			}
+			else if(langnow=="English"){ 
+				buy1letter.setText("Not enough points (40pts)");
+			}
+			buy1letter.setFont(errorred);
+			buy1letter.setEnabled(false);
+			}
+		
+		//UPgrade NBRFAULT
+		if(pts>=priceToUpgradeNbrFault && valupgradenbrfault<maxupgradenbrfault){
+			upgradenbrfault.setFont(normalblack);
+			upgradenbrfault.setEnabled(true);
+			}
+		else{
+			if(pts < priceToUpgradeNbrFault){
+				if(langnow=="French"){
+					upgradenbrfault.setText("Pas assez de points (100pts)");
+				}
+				else if(langnow=="English"){ 
+					upgradenbrfault.setText("Not enough points  (100pts)");
+				}
+			}else{
+				if(langnow=="French"){
+					upgradenbrfault.setText("Seulement augmentable 3 fois");
+				}
+				else if(langnow=="English"){ 
+					upgradenbrfault.setText("Only upgradable 3 times");
+
+				}
+			
+			upgradenbrfault.setFont(errorred);
+			upgradenbrfault.setEnabled(false);
+			}
+		
+		}
+		
 	}
 
 	
