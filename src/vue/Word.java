@@ -1,9 +1,11 @@
 package vue;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
 import javax.swing.JOptionPane;
@@ -26,19 +28,29 @@ public class Word {
 		
 		word ="";
 		secretword="";
-		
 		try{
 			
-			LineNumberReader fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnaire.txt")));		
+			LineNumberReader fnr =new LineNumberReader(reader);
+			//LineNumberReader fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnaire.txt").toString()));
+			//LineNumberReader fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
 			String langnow = Fenetre.getLang();
 			if(langnow=="French"){
-				fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
+				reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnaire.txt")));		
+				fnr =new LineNumberReader(reader);
+				
+				//fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnaire.txt").toString()));
+				//fnr = new LineNumberReader(new FileReader(new File(this.getClass().getResource("/dictionnaire.txt").toURI())));
+				//fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
 			}else if(langnow=="English"){
 				
-				fnr = new LineNumberReader(new FileReader(new File("dico/dictionnary.txt")));
+				reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnary.txt")));		
+				fnr =new LineNumberReader(reader);
+				//fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnary.txt").toString()));
+				//fnr = new LineNumberReader(new FileReader(new File(this.getClass().getResource("/dictionnary.txt").toURI())));
+				//fnr = new LineNumberReader(new FileReader(new File("dico/dictionnary.txt")));
 				
 			}
-			
 			
 			while((carac = fnr.read()) != -1){
 				if(fnr.getLineNumber() == (i+1) ){
@@ -58,7 +70,7 @@ public class Word {
 			for (int j=0; j<word.length();j++){
 				this.secretword += (this.word.charAt(j) != '\'' && this.word.charAt(j) != '-') ? "*" : this.word.charAt(j);
 			}
-			
+
 			fnr.close();
 			
 		} catch (FileNotFoundException e) {

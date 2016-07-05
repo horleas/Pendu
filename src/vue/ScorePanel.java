@@ -25,8 +25,6 @@ public class ScorePanel extends JPanel{
 	private Dimension dim = new Dimension (900,600);
 	private static Dimension dimlabelscore = new Dimension (800,50);
 	private static List listscore = new LinkedList();
-	private boolean liscorebool = false;
-	
 	public ScorePanel(){
 		this.setBackground(Color.white);
 		this.setLayout(new BorderLayout());
@@ -60,10 +58,6 @@ public class ScorePanel extends JPanel{
 		listscore.add(new Score("Cassiopé", 5,1));
 		listscore.add(new Score("Pierre", 2,0));
 		
-		liscorebool = false;
-		//ListIterator li = listscore.listIterator();
-		//while(li.hasNext()){
-
 		savescore();
 		
 		afficherScore();

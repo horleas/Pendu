@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -26,7 +27,10 @@ public class ImageLabel extends JPanel {
 		this.panelimg.setPreferredSize(dim);
 		
 		
-		JLabel img = new JLabel(new ImageIcon("images/pendu"+num+".jpg"));
+		URL urlimage = this.getClass().getResource("/pendu"+num+".jpg");
+		JLabel img = new JLabel(new ImageIcon(urlimage));
+		
+		//JLabel img = new JLabel(new ImageIcon("images/pendu"+num+".jpg"));
 		this.panelimg.add(img, BorderLayout.CENTER);
 		
 		panelimg.setBackground(Color.white);

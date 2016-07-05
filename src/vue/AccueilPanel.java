@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -31,8 +32,10 @@ public class AccueilPanel extends JPanel {
 
 		this.panaccueil.add(bienvenueAccueil, BorderLayout.NORTH);
 		
+		URL urlaccueil = this.getClass().getResource("/accueil.jpg");
+		JLabel img = new JLabel(new ImageIcon(urlaccueil));
 		
-		JLabel img = new JLabel(new ImageIcon("images/accueil.jpg"));
+		//JLabel img = new JLabel(new ImageIcon("images/accueil.jpg"));
 		this.panaccueil.add(img, BorderLayout.CENTER);
 		  
 		

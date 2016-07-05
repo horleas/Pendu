@@ -72,7 +72,7 @@ public class GamePanel extends JPanel {
 		this.setBackground(Color.white);
 		
 		nbrmot = 0 ; 
-		pts = 600 ;
+		pts = 0 ;
 		nbrfaute = 0 ;
 		nbrcoup = 0 ;
 		
@@ -312,7 +312,7 @@ public class GamePanel extends JPanel {
 			
 		});
 
-		this.panbonus.setBackground(Color.cyan);
+		this.panbonus.setBackground(Color.white);
 		this.leftcontent.add(panbonus, BorderLayout.SOUTH);
 		leftcontent.setBackground(Color.white);
 		
@@ -939,10 +939,10 @@ public class GamePanel extends JPanel {
 					upgradenbrfault.setText("Only upgradable 3 times");
 
 				}
+			}
 			
 			upgradenbrfault.setFont(errorred);
 			upgradenbrfault.setEnabled(false);
-			}
 		
 		}
 		
