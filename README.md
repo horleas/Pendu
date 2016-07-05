@@ -20,4 +20,6 @@ Version :
 
 02 July = add buyable bonus ( Disable 3 useless letters / Place every iteration of 1 letter in the word / Augment your nombre of fault before getting Hang)
 
-TODO : put in Jar File
+05 July = Create an executable Jar 
+
+
