@@ -12,6 +12,26 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/*
+ * Game Panel is the hearth of the game is composed with 2 big JPanel :
+ * the right one use the ImageLabel and is called every time it need to show another image
+ * the left one is composed of 3 parts : 
+ * 			pantexte : host nbremottrouver , scoreactuel and motatrouve
+ * 			panlettre : which host all the keybord button
+ * 			panbonus : host 3 button
+ * 
+ * Inside this panel:
+ * all the action of searching throught the word to place letters
+ * call for a new word 
+ * and update the score is done. 
+ * Translation is done here too. 		
+ * 
+ * important method is are :
+ * verify word() 
+ * isCharInWord()
+ * isButtonCharUp()
+ * updatepoint()
+ */
 public class GamePanel extends JPanel {
 
 	private JLabel nbremottrouver = new JLabel("Nombre de mots trouvés : A \n");
@@ -27,6 +47,9 @@ public class GamePanel extends JPanel {
 	private JPanel leftcontent = new JPanel();
 	private JPanel rightcontent = new JPanel();
 
+	/*
+	 * my button for the merchant panel with the price of each element
+	 */
 	private JButton disable3 = new JButton();
 	private int priceToDisable3 = 20 ;
 	private JButton buy1letter = new JButton();
@@ -34,7 +57,9 @@ public class GamePanel extends JPanel {
 	private JButton upgradenbrfault = new JButton();
 	private int priceToUpgradeNbrFault = 100 ;
 	
-	
+	/*
+	 * all the dimension used through this class
+	 */
 	private Dimension dimleft = new Dimension (400,600);
 	private Dimension dimright = new Dimension (300,600);
 	private Dimension dimbouton = new Dimension (50,30);
@@ -43,6 +68,11 @@ public class GamePanel extends JPanel {
 	private Dimension dimbonus = new Dimension (400,200);
 	private Dimension dimboutonbonus = new Dimension (300,30);
 	
+	/*
+	 * first tab is all the letters of Romanji alphabet but in French, we have some particularities such as letters with accent and C with cedilla
+	 * in order to prevent bug like picking the letter E in a french word and looking for E instead of É, we hade this tab which, when the player
+	 * choose to click of one of the following letters : E,A,C,O,U and I,for each letters of this tab, the word will be  completed 
+	 */
 	private  String tabchar[] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	private char accenttabE[] = {'Ê','Ë','É','È','E'};
 	private char accenttabA[] = {'Á','Â','À','Ã','Ä','A'};
@@ -51,7 +81,9 @@ public class GamePanel extends JPanel {
 	private char accenttabU[] = {'Ú','Û','Ù','Ü','U'};
 	private char accenttabI[] = {'Ï','Î','I'};
 	
-	
+	/*
+	 * some variable used to calculate the score or to count the mistake made in the game
+	 */
 	private JButton[] tabButton = new JButton[tabchar.length];
 	private static int nbrmot = 0 ; 
 	private static int pts = 0 ;
@@ -76,17 +108,17 @@ public class GamePanel extends JPanel {
 		nbrfaute = 0 ;
 		nbrcoup = 0 ;
 		
-		//Left CONTENT
+		/*
+		 * Left Content initialization
+		 */
 		
 		this.leftcontent.setLayout(new BorderLayout());
-		Font fontpetit = new Font("Arial", Font.BOLD, 14);
-		
+		Font fontpetit = new Font("Arial", Font.BOLD, 14);		
 		this.leftcontent.setPreferredSize(dimleft);
 		
 		
-		//nb mot trouver
-		nbremottrouver.setPreferredSize(dimtexte);
-		
+		//nb word found
+		nbremottrouver.setPreferredSize(dimtexte);	
 		String langnow = Fenetre.getLang();
 		if(langnow=="French"){
 			nbremottrouver.setText("Nombre de mots trouvés : "+ Integer.toString(nbrmot) );
@@ -100,28 +132,29 @@ public class GamePanel extends JPanel {
 		
 		nbremottrouver.setFont(fontpetit);
 		nbremottrouver.setHorizontalAlignment(JLabel.CENTER);
-
 		this.pantexte.setPreferredSize(new Dimension(400,75));
 		this.pantexte.add(nbremottrouver,BorderLayout.NORTH);
-		
-		
+				
 		//Score actuel
 		scoreactuel.setPreferredSize(dimtexte);
-
 		scoreactuel.setFont(fontpetit);
 		scoreactuel.setHorizontalAlignment(JLabel.CENTER);
-
-		this.pantexte.add(scoreactuel,BorderLayout.CENTER);
-		
+		this.pantexte.add(scoreactuel,BorderLayout.CENTER);	
 		this.pantexte.setBackground(Color.white);
 		
 		
 		//mot a trouver
-
 		this.motatrouve.setForeground(Color.blue);
 		motatrouve.setText(this.setSecretWordetoile());
-		//set the - to appear in the word ( all optional caractère outside the alphabet must be here for the first word
+		
+		//set the - to appear in the word ( all optional caractère outside the alphabet must be here for the first word )
 		verifyword('-');
+		
+		/*
+		 * get the first and last letter to help the player in easy mode
+		 * if the easy mode is set to false or the word is < 4 letters, the string return by easymode could be empty
+		 * so we concaten "  " to it. when the function using lettreeasyrecup will check, it will get space and not void and so prevent the bug
+		 */
 		String lettreeasyrecup = easymode();
 		lettreeasyrecup = lettreeasyrecup.concat("  ");
 		
@@ -132,11 +165,9 @@ public class GamePanel extends JPanel {
 		this.leftcontent.add(pantexte, BorderLayout.NORTH);
 		
 		
-		
-		
-		
-		// bouton lettres
-		//panlettre.setLayout(new GridLayout(0,7,5,5));
+		/*
+		 * take the alphabet and create a button for each letters in it 
+		 */
 		panlettre.setPreferredSize(dimlettre);
 		for(int j = 0 ;j< tabchar.length; j++ ){
 			tabButton[j] = new JButton( tabchar[j].toUpperCase());
@@ -146,20 +177,32 @@ public class GamePanel extends JPanel {
 			
 		}
 		
+		/*
+		 * in easy mode, some letters are already place.
+		 * In order to avoid the player clicking on those button with set them disabled
+		 * by comparing the letters get by easymod in the string lettreeasyrecup with the char inside the button
+		 * if the lettreeasyrecup is "  " which is 2 spaces , any button will be disabled
+		 *
+		 */
 		for( JButton refreshbouton : tabButton ){
 			if(refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(0)||refreshbouton.getText().charAt(0)== lettreeasyrecup.charAt(1)){
 				refreshbouton.setEnabled(false);
 			}
 			
 		}
-		
 		this.panlettre.setBackground(Color.white);
 		this.leftcontent.add(panlettre,BorderLayout.CENTER);
 		
 		
-		//Bonus Panel
+		/*
+		 * The bonus panel is created to offer to the player the opportunity to exchange some of his points with different bonus such as :
+		 * 		disabling 3 useless letters
+		 * 		placing 1 random letter with each occurences in the current word
+		 * 		have an additional try for the game( up to 10 try)
+		 */
 		
 		this.panbonus.setPreferredSize(dimbonus);
+		
 		// disable 3 letter which are not in the word for 20 pts
 		this.panbonus.add(disable3);
 		disable3.setPreferredSize(dimboutonbonus);
@@ -177,14 +220,16 @@ public class GamePanel extends JPanel {
 				char charToTest = 'a';
 				boolean booIsCharInWord = false ;
 				
-				
+
 				for(int i=0;i<3;i++){
 					do{
 						randomletter = (int) (Math.random()*tabchar.length);
 						charToTest = tabchar[randomletter].toUpperCase().charAt(0);
 						System.out.println(word.getWord()+" "+randomletter +charToTest);
 						 
-						
+						/*
+						 * must check for every special letters in french language to avoid disabling a button where the letters is inside the word with accent
+						 */						
 						if (charToTest == 'E'){
 							booIsCharInWord = !isCharInWord(word.getWord(),accenttabE);
 						}else if (charToTest == 'A'){
@@ -202,7 +247,9 @@ public class GamePanel extends JPanel {
 						}
 						
 						
-						
+					/*
+					 * the button will be disable if the letters isn't in the word and the button isn't already disabled	
+					 */
 					}while( (!booIsCharInWord) || (!isButtonCharUp(charToTest)));
 					
 					for( JButton refreshbouton : tabButton ){
@@ -232,12 +279,18 @@ public class GamePanel extends JPanel {
 				char charToTest = 'a';
 				boolean booIsCharInWord = false ;
 				
+				/*
+				 * take a random letters to put inside the word ( take care of special french letters)
+				 * if the button isn't already pressed
+				 */
 				do{
 					randomletter = (int) (Math.random()*tabchar.length);
 					charToTest = tabchar[randomletter].toUpperCase().charAt(0);
 					System.out.println(word.getWord()+" "+randomletter +charToTest);
 					 
-					
+					/*
+					 * check the presence of the letters in the word
+					 */
 					if (charToTest == 'E'){
 						booIsCharInWord = !isCharInWord(word.getWord(),accenttabE);
 					}else if (charToTest == 'A'){
@@ -255,9 +308,14 @@ public class GamePanel extends JPanel {
 					}
 					
 					
-					
+					/*
+					 * check for the button still up
+					 */
 				}while( (booIsCharInWord) || (!isButtonCharUp(charToTest)));
 				
+				/*
+				 * disable the concern button
+				 */
 				for( JButton refreshbouton : tabButton ){
 					if(refreshbouton.getText().charAt(0)== charToTest){
 						refreshbouton.setEnabled(false);
@@ -265,6 +323,9 @@ public class GamePanel extends JPanel {
 					
 				}
 				
+				/*
+				 * add the letters to the word
+				 */
 				if (charToTest == 'E'){
 					verifyword(accenttabE);
 				}else if (charToTest == 'A'){
@@ -292,7 +353,21 @@ public class GamePanel extends JPanel {
 		});
 		
 		
-		// augment nbrfault before lose by 1 for 100pts ( max 3)
+
+		/*
+		 *  augment nbrfault before lose by 1 for 100pts ( max 3)
+		 *  the math to load the correct image is :
+		 *  
+		 *  nbrfaute-valupgradenbrfault+3
+		 *  
+		 *  when the player begin the game, he is at 0 mistake and wll be hanged at 7 mistake 
+		 *  but with this new mechanic, he is at 3 fault about 10 and after each upgrade the valupgradenbrfault increase so :
+		 *  nbrfaute : 0~7
+		 *  valupgradenbrfault : 0~3
+		 *  
+		 *  valupgradenbrfault totally upgraded and beginning of the game : 0-3+3 = 0
+		 *  valupgradenbrfault totally upgraded and player loose : 10 - 3 + 3 10
+		 */
 		this.panbonus.add(upgradenbrfault);
 		upgradenbrfault.setEnabled(false);
 		upgradenbrfault.setPreferredSize(dimboutonbonus);
@@ -320,7 +395,9 @@ public class GamePanel extends JPanel {
 
 		
 		
-		// RIGHT CONTENT
+		/*
+		 * Right content : imageloarder according to the number of mistake
+		 */
 		
 		 ImageLabel image = new ImageLabel(Integer.toString(nbrfaute-valupgradenbrfault+3));
 		 this.rightcontent.add(image, BorderLayout.CENTER);
@@ -333,12 +410,23 @@ public class GamePanel extends JPanel {
 
 	}
 	
+	/*
+	 * this button listener is shared with all the button/letters of the alphabets.
+	 * when pressed, he will set himself disabled, then he will get is own text 
+	 * and will verify if this letters is in the word. ( special french letters again)
+	 * and it increase the amount of try. if the letters is in verifyword,
+	 * then modif will be true and the player can continue to play
+	 * if modif is false then , the playe rmake a mistake so the mistake counter is increased
+	 * and the image label must be refresh with the correct pictures.
+	 * 
+	 * if the player exceed the max mistake ( 7 + valupgradenbrfault ), he have failed and the echec method is called.
+	 */
 	class BoutonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			((JButton) e.getSource()).setEnabled(false);
-			System.out.println("vous avez appuyer sur le bouton : " + ((JButton) e.getSource()).getText());
+			//System.out.println("you pressed the button  : " + ((JButton) e.getSource()).getText());
 			char lettretape =((JButton) e.getSource()).getText().charAt(0);
 			
 			if (lettretape == 'E'){
@@ -366,7 +454,7 @@ public class GamePanel extends JPanel {
 			rightcontent.revalidate();
 			}
 			
-			System.out.println("votre nbr de faute est : " + nbrfaute + ". Vous en etes a votre "+ nbrcoup+" coups");
+			System.out.println("mistake counter : " + nbrfaute + ".you are at your "+ nbrcoup+" try");
 			System.out.println(word.getWord());
 			
 			
@@ -376,12 +464,17 @@ public class GamePanel extends JPanel {
 			
 		}}
 	
+	/*
+	 * function called when a word is complete or the player failed to be in the top 10 and a new game is lauched
+	 * it reset all the button to enable and get a new word to display
+	 * verify if there is not the linker of french composed word '-',
+	 * reset the variable and refresh the text and pictures
+	 */
 	public void restartbouton (){
 		for( JButton refreshbouton : tabButton ){
 			refreshbouton.setEnabled(true);
 		}
-
-		  
+  
 			do{
 				word.initWord();
 				}while(word.getWord().length()<4);
@@ -411,7 +504,15 @@ public class GamePanel extends JPanel {
 	}
 	
 	
-	
+	/*
+	 * called when the player failed to find a word.
+	 * Show in a JOptionPane the current word and resume the score and number of word found
+	 * then verify if the player is in the top 10 to propose him to write is name on the leaderboard
+	 * if the player don't write anything in the inputDialogue, we attribut him the anonymous name
+	 * and display the new score panel with him on it
+	 * 
+	 * If he can't be in the leaderboard, a new game is launch (restartbouton)
+	 */
 	public void echec(){
 		
 
@@ -481,6 +582,10 @@ public class GamePanel extends JPanel {
 
 	}
 	
+	/*
+	 * when a player complete a word , update nbrmot and update the point of the player depending of his number of mistake
+	 * then show him on an OptionPane the resume of his current game before continue the game by provinding a new word (restartbutton) 
+	 */
 	public void victory(){
         
 		nbrmot++;
@@ -522,7 +627,9 @@ public class GamePanel extends JPanel {
 
 	}
 	
-	
+	/*
+	 * set the secret word to be displayed on the panel to have the same length than the word looked about
+	 */
 	public String setSecretWordetoile(){
 		String secret = "";
 		
@@ -534,7 +641,9 @@ public class GamePanel extends JPanel {
 		return secret; 
 	}
 	
-	
+	/*
+	 * verify if the word is completed by looking if there is stars '*' left inside
+	 */
 	public boolean wordcomplete(){
 		boolean wordfound = true ;
 		for (int k=0 ;k<word.getWord().length() ; k++ ){
@@ -545,6 +654,12 @@ public class GamePanel extends JPanel {
 		return wordfound ;
 	}
 	
+	/*
+	 * verifyword(char c) take a char to look if it is inside the word.
+	 * check at each place if the char correspond to the word char.
+	 * if yes, modif = true to indicate the success of the player guessing the letter
+	 * then call wordcomplete to check if victory must be called
+	 */
 	public void verifyword(char c){
 		String wordupdate= motatrouve.getText();
 		String wordall= word.getWord();
@@ -568,7 +683,9 @@ public class GamePanel extends JPanel {
 		}
 	}
 	
-	
+	/*
+	 * same than the previous version but with tab for special french letters
+	 */
 	public void verifyword(char[] c){
 		String wordupdate= motatrouve.getText();
 		String wordall= word.getWord();
@@ -594,7 +711,10 @@ public class GamePanel extends JPanel {
 	}
 	
 	
-	
+	/*
+	 * method to get point according to the number of faults
+	 * if easy mode is actived, then the amount of points are divided by 2
+	 */
 	public int getScorebyfault(int nbrfautes){
 		int newpts = 0 ;
 		switch(nbrfautes){
@@ -621,7 +741,11 @@ public class GamePanel extends JPanel {
 		return newpts;
 	}
 	
-	
+	/*
+	 * easymode is done if the player choose to check the box on the menu.
+	 * it provide help to the player if the word has more than 4 letters
+	 * by giving the first letter and the last if the word has more than 7 letters.
+	 */
 	public String easymode(){
 		String lettretrouver ="";
 		
@@ -813,6 +937,9 @@ public class GamePanel extends JPanel {
 		return lettretrouver;
 	}
 	
+	/*
+	 * verify if the letter is in the word
+	 */
 	public boolean isCharInWord(String word, char charToTest) {
 		
 		for(int i=0;i< word.length();i++)
@@ -823,6 +950,9 @@ public class GamePanel extends JPanel {
 		return false;
 	}
 	
+	/*
+	 * verify if one of letter of the tab is in the word
+	 */
 	public boolean isCharInWord(String word, char charToTest[]) {
 		
 		for(int j=0;j<charToTest.length ;j++){
@@ -834,6 +964,9 @@ public class GamePanel extends JPanel {
 		return false;
 	}
 	
+	/*
+	 * verify if the button with the corresponding char is enable or disabled
+	 */
 	private boolean isButtonCharUp(char charToTest) {
 		for( JButton refreshbouton : tabButton ){
 			if(refreshbouton.getText().charAt(0)== charToTest){
@@ -847,6 +980,11 @@ public class GamePanel extends JPanel {
 		return false;
 	}
 	
+	
+	/*
+	 * update point is used to add or remove point by completing a word or buying a bonus
+	 * then set all the text according to the lang chosen
+	 */
 	private void updatePoint(int cost,int gain){
 		
 		pts = pts - cost;

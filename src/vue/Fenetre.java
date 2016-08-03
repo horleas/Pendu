@@ -17,6 +17,22 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+/*
+ * Fenetre = Window. class JFrame hosting the Jpanel of the game with
+ * menu to access them with mnemonique and accelerator to facilitate the navigation.
+ * MenuBar is composed with :
+ * Fichier with :
+ * 			New Game : lauch a game ( replace the current JPanel with GamePanel)
+ * 			Score : replace the current JPanel with ScorePanel
+ * 			Quitter : Exit the game
+ * A propos which means : About the game :
+ * 			regles : rules , replace the current JPanel with RulesPanel
+ * 			question : lauch a small windows to inform the player about the creation of the game before comming back to the Welcoming Panel
+ * Then we have a JComboBox with French and English possible selection to set the lang of the game.
+ * The Langage String is in static to be available for all classes.
+ * After we have the CheckBox for the easymode which is linked to the boolean booeasymode which is static for access from the GamePanel
+ * Lastly, SetLangMenu contains the translation from French and English of the MenuBar
+ */
 public class Fenetre extends JFrame{
 	
 	private Dimension size ;
@@ -58,8 +74,7 @@ public class Fenetre extends JFrame{
 		this.setContentPane(conteneur);
 
 		initBarMenu();
-		
-		
+				
 		conteneur.add(accueil,BorderLayout.CENTER);
 		
 	}
@@ -133,7 +148,7 @@ public class Fenetre extends JFrame{
 		});
 		apropos.add(question);
 		
-	    //Ajout de ce que doit faire le "?"
+
 	    question.addActionListener(new ActionListener(){
 	      public void actionPerformed(ActionEvent arg0) {
 	    	  
@@ -162,7 +177,7 @@ public class Fenetre extends JFrame{
 	    });
 	    
 
-	    // JComboboc choice of Language
+	    // JCombobox choice of Language
 	    langchoice.addItem("Français");
 	    langchoice.addItem("English");
 	    langchoice.setMaximumSize(new Dimension(100,20));
@@ -189,9 +204,7 @@ public class Fenetre extends JFrame{
 	    });
 	    
 	    menubar.add(langchoice);
-	    
-	    //---------------ZONE DE TEST ---------------------------------------------//
-	    
+	       
 
   	  	checkeasymode.setText("Mode Facile");
   	  	checkeasymode.addActionListener(new ActionListener(){
@@ -210,24 +223,7 @@ public class Fenetre extends JFrame{
 	     });
   	  	
 	    menubar.add(checkeasymode);
-	    
-	    /*
-	    apropos.add(test);
-	    test.addActionListener(new ActionListener(){
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				
-				conteneur.removeAll();
-				conteneur.add(new ScorePanel().getPanel(), BorderLayout.CENTER);
-				conteneur.revalidate();
-				
-				
-			}
-	     });*/
-	    
-	    //---------------FIN DE LA ZONE DE TEST ---------------------------------------------//
 		
 		this.setJMenuBar(menubar);
 	}

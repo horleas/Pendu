@@ -10,6 +10,16 @@ import java.io.LineNumberReader;
 
 import javax.swing.JOptionPane;
 
+/*
+ * Word class must search in the 2 dictionnaries :
+ * dictionnaire.txt contains 300 000+ word in French
+ * dictionnary.txt contains 300 000+ word in English
+ * 
+ * I used a math.random with the length of dictionnary to get
+ * a random number which be given to the LineNumberReader who return the word
+ * then the word is trim and put to uppercase before setting the secred word by replacing all the letters by stars '*'
+ * except the '-' which is used in the french langage and is named : composed word
+ */
 public class Word {
 	private String word ="";
 	private String secretword="";
@@ -32,23 +42,15 @@ public class Word {
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnaire.txt")));		
 			LineNumberReader fnr =new LineNumberReader(reader);
-			//LineNumberReader fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnaire.txt").toString()));
-			//LineNumberReader fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
 			String langnow = Fenetre.getLang();
 			if(langnow=="French"){
 				reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnaire.txt")));		
 				fnr =new LineNumberReader(reader);
-				
-				//fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnaire.txt").toString()));
-				//fnr = new LineNumberReader(new FileReader(new File(this.getClass().getResource("/dictionnaire.txt").toURI())));
-				//fnr = new LineNumberReader(new FileReader(new File("dico/dictionnaire.txt")));
+
 			}else if(langnow=="English"){
 				
 				reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/dictionnary.txt")));		
 				fnr =new LineNumberReader(reader);
-				//fnr = new LineNumberReader(new FileReader(this.getClass().getResourceAsStream("/dictionnary.txt").toString()));
-				//fnr = new LineNumberReader(new FileReader(new File(this.getClass().getResource("/dictionnary.txt").toURI())));
-				//fnr = new LineNumberReader(new FileReader(new File("dico/dictionnary.txt")));
 				
 			}
 			
@@ -78,8 +80,6 @@ public class Word {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erreur de chargement depuis le fichier de mots !", "ERREUR", JOptionPane.ERROR_MESSAGE);
 		}
-		
-		
 		
 	}
 	

@@ -11,6 +11,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+/*
+ * AccueilPanel = Reception Panel 
+ * First panel shown in Fenetre when the game is lauch
+ * Welcoming message for the player in French and English 
+ * according to the lang selected in Fenetre
+ */
 public class AccueilPanel extends JPanel {
 	
 	private JLabel bienvenueAccueil = new JLabel();
@@ -34,8 +40,6 @@ public class AccueilPanel extends JPanel {
 		
 		URL urlaccueil = this.getClass().getResource("/accueil.jpg");
 		JLabel img = new JLabel(new ImageIcon(urlaccueil));
-		
-		//JLabel img = new JLabel(new ImageIcon("images/accueil.jpg"));
 		this.panaccueil.add(img, BorderLayout.CENTER);
 		  
 		

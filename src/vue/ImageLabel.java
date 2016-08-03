@@ -14,6 +14,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/*
+ * this class ImageLabel controls the right side of the Game Panel
+ * and it show the pictures corresponding to the number given in argument
+ */
 public class ImageLabel extends JPanel {
 	
 	private JPanel panelimg = new JPanel();

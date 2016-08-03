@@ -19,6 +19,23 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/*
+ * ScorePanel is a Panel which show the top 10 of score.
+ * The first time this game is launch, it create a score.txt
+ * which will be initialized with the initListScore :
+ * static method savescore will rewrite the score.txt file
+ * static method afficherScore will take the list of score and show it on the ScorePanel
+ * When a player have finished a game, the GamePanel will checked
+ *  if the current score is over or equal to the last score of the list.
+ * If Yes, the player is ask to write his name and then the method newScore will iterating 
+ * over the list to find the place depending on the score of the player.
+ * when the place is found, and to keep the top 10, we remove the last score of the list 
+ * dimlabelscore is dimensioned to take the screen dimension of the panel in length
+ * but have only 50 in height so 10 label of score = 10*50 = 500 <600
+ * When the score is displayed, the 3 better score has special color to simulate the podium (gold, silver, bronze)
+ * and the label have different size for theirs placement in the top 10
+ * 
+ */
 public class ScorePanel extends JPanel{
 
 	private static JPanel panscore = new JPanel();
@@ -74,7 +91,7 @@ public class ScorePanel extends JPanel{
 			}
 			System.out.println( ((Score)listscore.get(i)).getScore() );
 		}
-		System.out.println("le nouveau score est a l'index "+ index);
+		System.out.println("the new record is at "+ index);
 		
 		listscore.add(index, newscore);
 		listscore.remove(listscore.size()-1);
@@ -89,8 +106,7 @@ public class ScorePanel extends JPanel{
 		return ((Score)listscore.get(listscore.size()-1)).getScore();
 	}
 	
-	
-	//a modifier pour lire le fichier 
+
 	public static void afficherScore(){
 		
 		panscore.removeAll();
@@ -107,8 +123,7 @@ public class ScorePanel extends JPanel{
 			 try {
 				listscore = (List) ois.readObject();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("on trouve pas le fichier score.txt");
+				System.out.println("can't find the file score.txt");
 				e.printStackTrace();
 			}
 			 
@@ -128,19 +143,7 @@ public class ScorePanel extends JPanel{
 			      e.printStackTrace();
 			    } catch (IOException e) {
 			      e.printStackTrace();
-			    }
-
-		 /*				for(int i = 0; i < listscore.size() ; i++){
-					JLabel lab = new JLabel(listscore.get(i).toString());
-					if(i==0){lab.setForeground(Color.yellow);}
-					if(i==1){lab.setForeground(Color.GRAY);}
-					if(i==2){lab.setForeground(Color.orange);}
-					lab.setFont(new Font("Arial", Font.BOLD, 50- i*4));
-					lab.setPreferredSize(dimlabelscore);
-					panscore.add(lab);
-		*/
-		 
-		 
+			    }		 
 		 
 		panscore.revalidate();
 		
@@ -154,13 +157,9 @@ public class ScorePanel extends JPanel{
 		              new BufferedOutputStream(
 		                new FileOutputStream(
 		                  new File("score.txt"))));
-		        	
-		      //Nous allons écrire chaque objet Game dans le fichier
 
 		      oos.writeObject(listscore);
-		      
-	      
-		      //Ne pas oublier de fermer le flux !
+
 		      oos.close();
 		    }catch(IOException e)
 		    {

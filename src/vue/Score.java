@@ -1,7 +1,9 @@
 package vue;
 
 import java.io.Serializable;
-
+/*
+ * Personal Class which connects the name of player, the score with the number of word completed
+ */
 public class Score implements Serializable{
 
 	private String nom ="Default" ;

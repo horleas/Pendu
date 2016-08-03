@@ -9,6 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+/*
+ * RulesPanel contains just the text for rules in English and French
+ */
 public class RulesPanel extends JPanel{
 	private JLabel bienvenueRegle = new JLabel();
 	private JTextArea messageRegle = new JTextArea();
